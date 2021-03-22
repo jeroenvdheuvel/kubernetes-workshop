@@ -1,0 +1,21 @@
+---
+
+apiVersion: v1
+kind: Service
+
+metadata:
+  name: pi-calculator
+  labels:
+    app.kubernetes.io/name: pi-calculator
+    app.kubernetes.io/part-of: kubernetes-workshop
+    app.kubernetes.io/kubernetes-component: service
+
+spec:
+  selector:
+    app.kubernetes.io/name: pi-calculator
+    app.kubernetes.io/part-of: kubernetes-workshop
+    app.kubernetes.io/kubernetes-component: pod
+  ports:
+    - name: http
+      port: 8080
+      targetPort: http

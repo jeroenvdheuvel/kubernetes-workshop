@@ -1,0 +1,28 @@
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+
+metadata:
+  name: pi-calculator
+  labels:
+    app.kubernetes.io/name: pi-calculator
+    app.kubernetes.io/part-of: kubernetes-workshop
+
+spec:
+  rules:
+    - host: kubernetes-workshop.staging.werkspot.com
+      http:
+        paths:
+          - backend:
+              service:
+                name: pi-calculator
+                port:
+                  name: http
+            path: /
+            pathType: Prefix
+
+  tls:
+    - hosts:
+        - kubernetes-workshop.staging.werkspot.com
+      secretName: tls-wildcard-werkspot-com
