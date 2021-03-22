@@ -4,9 +4,9 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 
 metadata:
-  name: pi-calculator
+  name: pi-calculator-backend
   labels:
-    app.kubernetes.io/name: pi-calculator
+    app.kubernetes.io/name: pi-calculator-backend
     app.kubernetes.io/part-of: kubernetes-workshop
 
 spec:
@@ -16,10 +16,10 @@ spec:
         paths:
           - backend:
               service:
-                name: pi-calculator
+                name: pi-calculator-backend
                 port:
                   name: http
-            path: /
+            path: /api
             pathType: Prefix
 
   tls:

@@ -4,15 +4,15 @@ apiVersion: v1
 kind: Service
 
 metadata:
-  name: pi-calculator
+  name: pi-calculator-frontend
   labels:
-    app.kubernetes.io/name: pi-calculator
+    app.kubernetes.io/name: pi-calculator-frontend
     app.kubernetes.io/part-of: kubernetes-workshop
     app.kubernetes.io/kubernetes-component: service
 
 spec:
   selector:
-    app.kubernetes.io/name: pi-calculator
+    app.kubernetes.io/name: pi-calculator-frontend
     app.kubernetes.io/part-of: kubernetes-workshop
     app.kubernetes.io/kubernetes-component: pod
   ports:

@@ -4,9 +4,9 @@ apiVersion: v1
 kind: ConfigMap
 
 metadata:
-  name: pi-calculator
+  name: pi-calculator-backend
   labels:
-    app.kubernetes.io/name: pi-calculator
+    app.kubernetes.io/name: pi-calculator-backend
     app.kubernetes.io/part-of: kubernetes-workshop
     app.kubernetes.io/kubernetes-component: ConfigMap
 
@@ -14,61 +14,45 @@ data:
   nginx.conf: |-
     # This is to make sure Nginx can run as an unprivileged user
     pid /tmp/nginx.pid;
-
     worker_processes auto;
-
     events {
         worker_connections  1024;
     }
-
     http {
         include       mime.types;
         default_type  application/octet-stream;
-
         log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
                           '$status $body_bytes_sent "$http_referer" '
                           '"$http_user_agent" "$http_x_forwarded_for"';
-
         sendfile        on;
-
         keepalive_timeout 2;
         client_max_body_size 128M;
-
         server_tokens off;
-
         # These are to make sure Nginx can run as an unprivileged user
         client_body_temp_path /tmp/nginx 1 2;
         proxy_temp_path /tmp/nginx-proxy;
         fastcgi_temp_path /tmp/nginx-fastcgi;
         uwsgi_temp_path /tmp/nginx-uwsgi;
         scgi_temp_path /tmp/nginx-scgi;
-
         error_log /dev/stderr warn;
         access_log /dev/stdout main;
-
         server {
             listen   8080; ## listen for ipv4; this line is default and implied
             listen   [::]:8080 default ipv6only=on; ## listen for ipv6
-
             server_name _;
-
             location / {
                 fastcgi_pass 127.0.0.1:9000;
                 fastcgi_split_path_info ^(.+\.php)(/.*)$;
                 include fastcgi_params;
-
                 # Mitigate https://httpoxy.org/ vulnerabilities
                 fastcgi_param HTTP_PROXY "";
-
                 fastcgi_param SCRIPT_FILENAME /var/www/html/pi.php;
                 fastcgi_param DOCUMENT_ROOT /var/www/html;
             }
-
             location /health {
                 access_log off;
                 return 200 "healthy\n";
             }
-
             location ~* \.php$ {
                 deny all;
             }
