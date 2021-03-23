@@ -4,37 +4,40 @@ apiVersion: apps/v1
 kind: Deployment
 
 metadata:
-  name: pi-calculator-frontend
+  name: pi-calculator
   labels:
-    app.kubernetes.io/name: pi-calculator-frontend
+    app.kubernetes.io/name: pi-calculator
     app.kubernetes.io/part-of: kubernetes-workshop
     app.kubernetes.io/kubernetes-component: deployment
 
 spec:
   selector:
     matchLabels:
-      app.kubernetes.io/name: pi-calculator-frontend
+      app.kubernetes.io/name: pi-calculator
       app.kubernetes.io/part-of: kubernetes-workshop
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: pi-calculator-frontend
+        app.kubernetes.io/name: pi-calculator
         app.kubernetes.io/part-of: kubernetes-workshop
         app.kubernetes.io/kubernetes-component: pod
     spec:
       containers:
-        - name: pi-calculator-frontend
-          image: jeroenvdheuvel/kubernetes-workshop-pi:frontend
+        - name: pi-calculator-nginx
+          image: nginx:1.19
           imagePullPolicy: Always
           ports:
             - name: http
               containerPort: 8080
           volumeMounts:
-            - name: pi-calculator-frontend
+            - name: pi-calculator
               mountPath: /etc/nginx/nginx.conf
               subPath: nginx.conf
               readOnly: true
+        - name: pi-calculator-php
+          image: jeroenvdheuvel/kubernetes-workshop-pi:fullstack
+          imagePullPolicy: Always
       volumes:
-        - name: pi-calculator-frontend
+        - name: pi-calculator
           configMap:
-            name: pi-calculator-frontend
+            name: pi-calculator
