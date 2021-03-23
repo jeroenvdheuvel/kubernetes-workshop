@@ -53,6 +53,13 @@ spec:
               port: 8080
             periodSeconds: 5
             timeoutSeconds: 3
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              cpu: 50m
+              memory: 32Mi
       volumes:
         - name: pi-calculator-frontend
           configMap:
