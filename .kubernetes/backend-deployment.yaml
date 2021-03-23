@@ -34,9 +34,46 @@ spec:
               mountPath: /etc/nginx/nginx.conf
               subPath: nginx.conf
               readOnly: true
+          startupProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            failureThreshold: 10
+            periodSeconds: 3
+            timeoutSeconds: 3
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            periodSeconds: 3
+            timeoutSeconds: 3
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            periodSeconds: 5
+            timeoutSeconds: 3
         - name: pi-calculator-backend-php
           image: jeroenvdheuvel/kubernetes-workshop-pi:backend
           imagePullPolicy: Always
+          startupProbe:
+            exec:
+              command: ["/bin/sh", "-c", "env - REQUEST_METHOD=GET SCRIPT_FILENAME=/var/www/html/health.php REQUEST_URI=/health.php HTTP_HOST=localhost HTTPS=1 cgi-fcgi -bind -connect 127.0.0.1:9000 | grep -q 'Status: 204 No Content'"]
+            failureThreshold: 10
+            periodSeconds: 3
+            timeoutSeconds: 3
+          readinessProbe:
+            exec:
+              command: ["/bin/sh", "-c", "env - REQUEST_METHOD=GET SCRIPT_FILENAME=/var/www/html/health.php REQUEST_URI=/health.php HTTP_HOST=localhost HTTPS=1 cgi-fcgi -bind -connect 127.0.0.1:9000 | grep -q 'Status: 204 No Content'"]
+            initialDelaySeconds: 5
+            periodSeconds: 3
+            timeoutSeconds: 3
+          livenessProbe:
+            exec:
+              command: ["/bin/sh", "-c", "env - REQUEST_METHOD=GET SCRIPT_FILENAME=/var/www/html/health.php REQUEST_URI=/health.php HTTP_HOST=localhost HTTPS=1 cgi-fcgi -bind -connect 127.0.0.1:9000 | grep -q 'Status: 204 No Content'"]
+            initialDelaySeconds: 5
+            periodSeconds: 15
+            timeoutSeconds: 5
       volumes:
         - name: pi-calculator-backend
           configMap:

@@ -34,6 +34,25 @@ spec:
               mountPath: /etc/nginx/nginx.conf
               subPath: nginx.conf
               readOnly: true
+          startupProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            failureThreshold: 10
+            periodSeconds: 3
+            timeoutSeconds: 3
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            periodSeconds: 3
+            timeoutSeconds: 3
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            periodSeconds: 5
+            timeoutSeconds: 3
       volumes:
         - name: pi-calculator-frontend
           configMap:
